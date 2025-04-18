@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Sender Client</title>
+</head>
+<body>
+  <h1>Data Sender Client</h1>
+
+  <label for="privateKeyInput">Private Key:</label>
+  <input type="text" id="privateKeyInput" placeholder="Enter Private Key">
+  <button id="sendBtn">Send Data</button>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+  <script>
+    function generateAShortGUID() {
+      return 'xxxxxxxx'.replace(/[xy]/g, function(c) {
+        const random = Math.random() * 16 | 0;
+        const value = c === 'x' ? random : (random & 0x3 | 0x8);
+        return value.toString(16);
+      });
+    }
+
+    const socket = io('http://localhost:3000/');
+
+    socket.on("connect", function () {
+      console.log("Socket connection established with the server!");
+      socket.emit("login", {
+        guid: uuid.v4(),
+        private_key: document.getElementById('privateKeyInput').value.trim() || '1',
+        type: "data-sender",
+      });
+    });
+
+    socket.on('notification', (msg) => {
+      console.log('New notification:', msg);
+    });
+
+    socket.on('error', (msg) => {
+      console.log('Error:', msg);
+    });
+
+    document.getElementById('sendBtn').addEventListener('click', () => {
+      const private_key = document.getElementById('privateKeyInput').value.trim() || '1';
+      const data = {
+        sensor_id: generateAShortGUID(),
+        temperature: Math.floor(Math.random() * 100),
+        humidity: Math.floor(Math.random() * 100),
+        timestamp: Date.now(),
+        private_key: private_key,
+      };
+      socket.emit("incoming_data", data);
+      console.log("Sent data:", data);
+    });
+
+    socket.on("disconnect", function () {
+      console.log("Connection to servers has been lost!");
+    });
+  </script>
+</body>
+</html>

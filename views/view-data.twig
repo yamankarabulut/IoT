@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Viewer</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #f2f2f2; }
+    h1 { color: #333; }
+    .pagination { display: flex; justify-content: center; margin-top: 20px; }
+    .pagination a { padding: 8px 16px; margin: 0 5px; border: 1px solid #ddd; text-decoration: none; color: #333; }
+    .pagination a:hover { background-color: #f2f2f2; }
+    .pagination .disabled { color: #ccc; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <h1>Data Viewer</h1>
+
+  {% if logs is not empty %}
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Sensor ID</th>
+          <th>Temperature</th>
+          <th>Humidity</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ log.sensor_id }}</td>
+            <td>{{ log.temperature }}</td>
+            <td>{{ log.humidity }}</td>
+            <td>{{ log.timestamp }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  
+    <!-- Pagination Controls -->
+    <div class="pagination">
+      {% if currentPage > 1 %}
+        <a href="?page=1&limit={{ limit }}">First</a>
+        <a href="?page={{ currentPage - 1 }}&limit={{ limit }}">Previous</a>
+      {% else %}
+        <span class="disabled">First</span>
+        <span class="disabled">Previous</span>
+      {% endif %}
+      
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      
+      {% if currentPage < totalPages %}
+        <a href="?page={{ currentPage + 1 }}&limit={{ limit }}">Next</a>
+        <a href="?page={{ totalPages }}&limit={{ limit }}">Last</a>
+      {% else %}
+        <span class="disabled">Next</span>
+        <span class="disabled">Last</span>
+      {% endif %}
+    </div>
+  
+  {% else %}
+    <p>No data available.</p>
+  {% endif %}
+
+</body>
+</html>

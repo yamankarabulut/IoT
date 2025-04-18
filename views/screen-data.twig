@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Screen</title>
+</head>
+<body>
+  <h1>Data Screen</h1>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
+  <div>
+    <h2>Data Stream</h2>
+    <div id="dataStream">
+      <!-- Data will be displayed here -->
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th id="sensorIdHeader">Sensor ID</th>
+            <th id="temperatureHeader">Temperature</th>
+            <th id="humidityHeader">Humidity</th>
+            <th id="timestampHeader">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="dataBody">
+          <tr id="dataRow">
+            <td id="sensorId">{{ log.sensor_id }}</td>
+            <td id="temperature">{{ log.temperature }}</td>
+            <td id="humidity">{{ log.humidity }}</td>
+            <td id="timestamp">{{ log.timestamp }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    </div>
+  <script>
+    const guid = "{{ guid }}"
+    const socket = io('http://localhost:3000/');
+
+    socket.on("connect", function () {
+      console.log("Socket connection established with the server!");
+      socket.emit("login", {
+        private_key: guid,
+        type: "data-screen",
+      });
+    });
+
+    socket.on('notification', (msg) => {
+      console.log('New notification:', msg);
+      const sensorId = document.getElementById('sensorId');
+      sensorId.innerText = msg.sensor_id;
+      const temperature = document.getElementById('temperature'); 
+      temperature.innerText = msg.temperature;
+      const humidity = document.getElementById('humidity');
+      humidity.innerText = msg.humidity;
+      const timestamp = document.getElementById('timestamp');
+      timestamp.innerText = msg.timestamp;
+    });
+
+    socket.on("disconnect", function () {
+      console.log("Connection to servers has been lost!");
+    });
+
+  </script>
+</body>
+</html>
