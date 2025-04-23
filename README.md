@@ -1,11 +1,12 @@
-This is a POC (Proof of Concept) API developed in short notice (3-4 hours) to imitate sensor data coming from IoT devices,
-and show their values in client pages which were guarded by soft GUID secret locks in real time using websocket technologies.
+This is a POC (Proof of Concept) API developed on short notice (3–4 hours) to simulate sensor data coming from IoT devices,
+and display their values on client pages in real time using Socket.io while
+the client pages are protected by soft GUID-based secret locks.
 
 It also includes:
-* MongoDB as a database,
+* MongoDB as the database,
 * Twig templating engine,
 * JWT authentication,
 * Api-Key authentication,
-* Some basic rate-limiting implementations,
-* Some logging middlewares,
-* Some enumaration classes to provide a level of standardization to HTTP result codes, and improve readability
+* Basic rate-limiting implementations,
+* Logging middlewares,
+* Enumeration classes to standardize HTTP result codes and improve readability
